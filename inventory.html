@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}My Inventory – Wood Market{% endblock %}
+
+{% block content %}
+<h1>My Inventory</h1>
+<p class="subtitle">Manage your wood products. Low-stock threshold is currently set to <strong>{{ low_stock_threshold }}</strong> units.</p>
+
+<section class="card">
+    <h2>Add New Item</h2>
+    <form method="POST" class="form-grid">
+        <input type="hidden" name="action" value="add">
+        <label>
+            Name *
+            <input type="text" name="name" required placeholder="e.g. Oak 2x4 Lumber">
+        </label>
+        <label>
+            Type / Species
+            <input type="text" name="type" placeholder="e.g. Oak, Pine, Maple">
+        </label>
+        <label>
+            Quantity *
+            <input type="number" name="quantity" min="0" value="0" required>
+        </label>
+        <label>
+            Price (USD) *
+            <input type="number" name="price" step="0.01" min="0" value="0.00" required>
+        </label>
+        <label class="full-width">
+            Description
+            <textarea name="description" rows="2" placeholder="Dimensions, grade, notes..."></textarea>
+        </label>
+        <button type="submit" class="btn-primary">Add Item</button>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Current Stock</h2>
+    {% if items %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="{% if item.quantity <= low_stock_threshold %}low-stock{% endif %}">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.type or '—' }}</td>
+                    <td>
+                        {{ item.quantity }}
+                        {% if item.quantity <= low_stock_threshold %}
+                            <span class="badge badge-danger">Low</span>
+                        {% endif %}
+                    </td>
+                    <td>${{ '%.2f'|format(item.price) }}</td>
+                    <td class="desc">{{ item.description or '—' }}</td>
+                    <td class="actions">
+                        <form method="POST" class="inline-form">
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="qty-input">
+                            <input type="number" name="price" value="{{ '%.2f'|format(item.price) }}" step="0.01" min="0" class="price-input">
+                            <button type="submit" class="btn-sm">Update</button>
+                        </form>
+                        <form method="POST" class="inline-form" onsubmit="return confirm('Delete this item?');">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                            <button type="submit" class="btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="empty">No items yet. Add your first product above.</p>
+    {% endif %}
+</section>
+{% endblock %}

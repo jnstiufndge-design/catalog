@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Register – Wood Market{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <h1>Create Account</h1>
+    <form method="POST" class="auth-form">
+        <label>
+            Username
+            <input type="text" name="username" required autofocus>
+        </label>
+        <label>
+            Email
+            <input type="email" name="email" required>
+        </label>
+        <label>
+            Phone (optional – for SMS low-stock alerts)
+            <input type="tel" name="phone" placeholder="+15551234567">
+            <small>Use E.164 format, e.g. +15551234567</small>
+        </label>
+        <label>
+            Password
+            <input type="password" name="password" required minlength="6">
+        </label>
+        <label>
+            I am a
+            <select name="role">
+                <option value="buyer">Buyer</option>
+                <option value="seller">Seller (Wood Company)</option>
+            </select>
+        </label>
+        <button type="submit" class="btn-primary btn-block">Register</button>
+    </form>
+    <p class="auth-footer">
+        Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </p>
+</div>
+{% endblock %}

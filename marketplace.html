@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Marketplace – Wood Market{% endblock %}
+
+{% block content %}
+<h1>Wood Marketplace</h1>
+<p class="subtitle">Browse available lumber and wood products from sellers.</p>
+
+{% if items %}
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Qty Available</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Seller</th>
+                <th>Buy</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr class="{% if item.quantity <= low_stock_threshold %}low-stock{% endif %}">
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.type or '—' }}</td>
+                <td>
+                    {{ item.quantity }}
+                    {% if item.quantity <= low_stock_threshold %}
+                        <span class="badge badge-warning">Low stock</span>
+                    {% endif %}
+                </td>
+                <td>${{ '%.2f'|format(item.price) }}</td>
+                <td class="desc">{{ item.description or '—' }}</td>
+                <td>{{ item.seller_name }}</td>
+                <td>
+                    {% if current_user.is_authenticated and current_user.role == 'buyer' %}
+                        <form method="POST" action="{{ url_for('create_checkout_session') }}" class="buy-form">
+                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                            <input type="number" name="quantity" min="1" max="{{ item.quantity }}" value="1" class="qty-input">
+                            <button type="submit" class="btn-primary btn-sm">Buy with Stripe</button>
+                        </form>
+                    {% elif current_user.is_authenticated %}
+                        <span class="muted">Sellers cannot buy</span>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn-outline btn-sm">Login to buy</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <div class="empty-state">
+        <p>No items currently available for sale.</p>
+        {% if current_user.is_authenticated and current_user.role == 'seller' %}
+            <a href="{{ url_for('inventory') }}" class="btn-primary">Add inventory</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

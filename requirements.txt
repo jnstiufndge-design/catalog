@@ -1,0 +1,8 @@
+Flask>=3.0.0
+Flask-Login>=0.6.3
+Flask-Mail>=0.10.0
+Werkzeug>=3.0.0
+stripe>=10.0.0
+twilio>=9.0.0
+python-dotenv>=1.0.0
+gunicorn>=22.0.0

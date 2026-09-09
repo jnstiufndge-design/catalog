@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Wood Market – Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Wood Market</h1>
+    <p class="lead">
+        Online inventory management + marketplace built specifically for wood companies.
+        List lumber, track stock, sell to buyers, and get low-stock alerts automatically.
+    </p>
+    <div class="hero-actions">
+        <a href="{{ url_for('marketplace') }}" class="btn-primary btn-lg">Browse Marketplace</a>
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('register') }}" class="btn-outline btn-lg">Get Started</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature-card">
+        <h3>📦 Inventory</h3>
+        <p>Sellers manage stock levels, prices, and product details just like QuickBooks.</p>
+    </div>
+    <div class="feature-card">
+        <h3>🛒 Marketplace</h3>
+        <p>Buyers discover and purchase wood products from multiple sellers in one place.</p>
+    </div>
+    <div class="feature-card">
+        <h3>💳 Secure Payments</h3>
+        <p>Stripe Checkout handles real card payments safely and reliably.</p>
+    </div>
+    <div class="feature-card">
+        <h3>📧 + 📱 Alerts</h3>
+        <p>Automatic email confirmations and SMS low-stock warnings so you never run out.</p>
+    </div>
+</section>
+{% endblock %}

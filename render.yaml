@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: wood-market
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: LOW_STOCK_THRESHOLD
+        value: "10"
+      # After the first deploy, go to the Render dashboard → Environment
+      # and add these secrets (do not commit real values to Git):
+      # STRIPE_SECRET_KEY
+      # STRIPE_PUBLISHABLE_KEY
+      # STRIPE_ENDPOINT_SECRET
+      # MAIL_SERVER
+      # MAIL_PORT
+      # MAIL_USE_SSL
+      # MAIL_USERNAME
+      # MAIL_PASSWORD
+      # MAIL_DEFAULT_SENDER
+      # TWILIO_ACCOUNT_SID
+      # TWILIO_AUTH_TOKEN
+      # TWILIO_PHONE_NUMBER

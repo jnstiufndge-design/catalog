@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Wood Market{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('index') }}">🪵 Wood Market</a>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('marketplace') }}">Marketplace</a>
+            {% if current_user.is_authenticated %}
+                {% if current_user.role == 'seller' %}
+                    <a href="{{ url_for('inventory') }}">My Inventory</a>
+                {% endif %}
+                <span class="user-info">{{ current_user.username }} ({{ current_user.role }})</span>
+                <a href="{{ url_for('logout') }}" class="btn-outline">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}" class="btn-primary">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Wood Market &mdash; Inventory + Marketplace for wood companies</p>
+    </footer>
+</body>
+</html>
